@@ -1,10 +1,13 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from .models import Fcuser
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
+def home(request):
+    return HttpResponse('Home')
+
 
 def login(request):
     if request.method =='GET':
@@ -12,15 +15,20 @@ def login(request):
     elif request.method =='POST':
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
-
+        print(username)
+        print(password)
+        
         res_data = {}
         if not (username and password):
             res_data['error'] = '모든 값을 입력해야 합니다.'
         else:
             fcuser = Fcuser.objects.get(username=username)
-            if check_password(password, fcuser.password):
-                # 비밀번호 일치, 로그인 처리 영역
-                pass
+            # fcuser = Fcuser.objects.get(password=password)
+            print(fcuser.password)
+            if check_password(password, password):
+                # request.session['user'] = fcuser.id
+
+                return redirect('http://www.naver.com')
             else:
                 # 비밀번호 불일치 영역
                 res_data['error'] = '비밀번호 틀렸삼'
